@@ -19,8 +19,15 @@ import {
   getCharacters,
   addToFavourites,
   removeFavourites,
+  searchData,
 } from './HomePageActions';
+
+import {
+  CharacterScreen
+} from '../Character/CharacterActions'
+
 import {FlatList} from 'react-native-gesture-handler';
+import { Actions } from 'react-native-router-flux';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -28,6 +35,8 @@ const HomePage = () => {
   const [ShowFavourites, setShowFavourites] = useState(false);
   const [Search, setSearch] = useState(false);
   const [SearchInput, setSearchInput] = useState('');
+
+  let TypingTimeout;
 
   useEffect(() => {
     dispatch(getCharacters());
@@ -77,7 +86,13 @@ const HomePage = () => {
             placeholder="Search"
             placeholderTextColor="#ABABAB"
             style={[styles.searchTextStyle]}
-            onChangeText={val => setSearchInput(val)}   
+            onChangeText={val => {
+              clearTimeout(TypingTimeout)
+              TypingTimeout = setTimeout(() => {
+                dispatch(searchData(val));
+              },500)
+              }
+            }   
           />
           <TouchableOpacity onPress={() => setSearch(!Search)}>
             <Text
@@ -108,12 +123,11 @@ const HomePage = () => {
                 numColumns={2}
                 bounces={false}
                 keyExtractor={(item, index) => index.toString()}
-                data={home.characters.filter(item =>
-                  item.name.includes(SearchInput),
-                )}
+                data={home.characters}
                 renderItem={({item}) => (
                   <View style={{marginTop: hp('3%'), paddingRight: hp('2%')}}>
                     <View>
+                      <TouchableOpacity onPress={()=> dispatch(CharacterScreen(item))}>
                       <Image
                         source={{uri: item.img}}
                         style={{
@@ -122,6 +136,7 @@ const HomePage = () => {
                           borderRadius: 10,
                         }}
                       />
+                      </TouchableOpacity>
                       <View>
                         <View
                           style={{

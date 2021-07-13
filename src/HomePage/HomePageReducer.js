@@ -1,12 +1,13 @@
-import { FAVOURITES, CHARACTERS, SHOW_LOADER } from "./HomePageActionType"
+import { FAVOURITES, CHARACTERS, SHOW_LOADER, CURRENT_CHARACTER } from "./HomePageActionType"
 
 const INITIAL_STATE = {
     characters: null,
     showLoader: true,
-    favourites: []
+    favourites: [],
+    currentCharacter: []
 }
 
-export default ( state = INITIAL_STATE, action ) => {
+export default (state = INITIAL_STATE, action ) => {
     console.log(action.type)
     switch (action.type){
         case CHARACTERS:
@@ -26,7 +27,13 @@ export default ( state = INITIAL_STATE, action ) => {
                 ...state,
                 favourites: action.payload.favourites
             }
-    
+
+        case CURRENT_CHARACTER:
+            return{
+                ...state,
+                currentCharacter: action.payload.currentCharacter
+            }
+
         default:
             return state
     }

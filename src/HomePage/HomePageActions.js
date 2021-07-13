@@ -1,4 +1,5 @@
-import { FAVOURITES, CHARACTERS, SHOW_LOADER } from "./HomePageActionType"
+import { Actions } from "react-native-router-flux"
+import { FAVOURITES, CHARACTERS, SHOW_LOADER, CURRENT_CHARACTER } from "./HomePageActionType"
 
 const BaseURL = 'https://www.breakingbadapi.com'
 
@@ -35,6 +36,7 @@ export const addToFavourites = (item) => {
     return(dispatch, getState) => {
 
         var fav = getState().home.favourites
+        console.log(fav);
         var data = [...fav, item]
 
         dispatch({
@@ -62,3 +64,23 @@ export const removeFavourites = (item) => {
         })
     }
 }
+
+
+export const searchData = (searchInput) => {
+    return(dispatch, getState) => {
+        console.log('It ran');
+        fetch(BaseURL+'/api/characters?name='+searchInput)
+        .then(resp => resp.json())
+        .then(resp => {
+            dispatch({
+                type: CHARACTERS,
+                payload: {
+                    characters: resp
+                }
+            })
+            console.log(resp);
+        })
+    }
+}
+
+
